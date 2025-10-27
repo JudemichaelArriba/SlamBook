@@ -69,7 +69,10 @@ class FormPageTwoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Listeniner for updated slamBook from FormPageThreeFragment
-        parentFragmentManager.setFragmentResultListener("slamBooKKey", viewLifecycleOwner) { key, bundle ->
+        parentFragmentManager.setFragmentResultListener(
+            "slamBooKKey",
+            viewLifecycleOwner
+        ) { key, bundle ->
             bundle.getParcelable<SlamBook>("slamBooK")?.let {
                 slamBook = it
                 restoreDataFromSlamBook()
@@ -110,9 +113,9 @@ class FormPageTwoFragment : Fragment() {
 
             // Setup skill rate dropdown
             val rates = resources.getStringArray(R.array.skillRate)
-            val rateAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, rates)
+            val rateAdapter =
+                ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, rates)
             skillRate.setAdapter(rateAdapter)
-
 
 
             // Set button click listeners
@@ -168,24 +171,76 @@ class FormPageTwoFragment : Fragment() {
             "Skills" -> {
                 val selectedRate = binding.skillRate.text.toString()
                 if (selectedRate.isEmpty()) {
-                    Snackbar.make(binding.root, "Please select a rate first.", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        binding.root,
+                        "Please select a rate first.",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                     return
                 }
                 skills.add(Skill(text, selectedRate.toInt()))
             }
         }
-        Snackbar.make(binding.root, "Data has been successfully added.", Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, "Data has been successfully added.", Snackbar.LENGTH_SHORT)
+            .show()
         field.setText("")
         recyclerView.adapter?.notifyDataSetChanged()
 
         view?.let {
-            val imm = binding.root.context.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm =
+                binding.root.context.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
             recyclerView.requestFocus()
         }
     }
 
     private fun btnNextOnClickListener() {
+
+
+        var hasError = false
+
+
+        /*
+        checker if the fields didnt have atleast one darta
+         */
+        if (songs.isEmpty()) {
+            binding.songName.error = "Add at least one favorite song"
+            hasError = true
+        } else {
+            binding.songName.error = null
+        }
+
+        if (movies.isEmpty()) {
+            binding.movieName.error = "Add at least one favorite movie"
+            hasError = true
+        } else {
+            binding.movieName.error = null
+        }
+
+        if (hobbies.isEmpty()) {
+            binding.hobbiesInput.error = "Add at least one hobby"
+            hasError = true
+        } else {
+            binding.hobbiesInput.error = null
+        }
+
+        if (skills.isEmpty()) {
+            binding.skillInput.error = "Add at least one skill"
+            hasError = true
+        } else {
+            binding.skillInput.error = null
+        }
+
+        if (hasError) {
+            Snackbar.make(
+                binding.root,
+                "Please fill in all sections before proceeding.",
+                Snackbar.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+
         slamBook.favoriteSongs = songs
         slamBook.favoriteMovies = movies
         slamBook.hobbies = hobbies
@@ -193,7 +248,10 @@ class FormPageTwoFragment : Fragment() {
 
         val bundle = Bundle()
         bundle.putParcelable("slamBooK", slamBook)
-        findNavController().navigate(R.id.action_formPageTwoFragment_to_formPageThreeFragment, bundle)
+        findNavController().navigate(
+            R.id.action_formPageTwoFragment_to_formPageThreeFragment,
+            bundle
+        )
     }
 
     private fun btnBackOnClickListener() {
