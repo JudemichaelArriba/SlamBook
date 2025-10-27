@@ -46,6 +46,16 @@ data class SlamBook(
         email = parcel.readString()
         contactNo = parcel.readString()
         address = parcel.readString()
+
+
+
+        favoriteSongs = parcel.createTypedArrayList(Song.CREATOR)
+
+
+
+
+
+
         defineLove = parcel.readString()
         defineFriendship = parcel.readString()
         memorableExperience = parcel.readString()
@@ -67,6 +77,19 @@ data class SlamBook(
         parcel.writeString(email)
         parcel.writeString(contactNo)
         parcel.writeString(address)
+
+
+
+        parcel.writeTypedList(favoriteSongs)
+
+
+
+
+
+
+
+
+
         parcel.writeString(defineLove)
         parcel.writeString(defineFriendship)
         parcel.writeString(memorableExperience)
