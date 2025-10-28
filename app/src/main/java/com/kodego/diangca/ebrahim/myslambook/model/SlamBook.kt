@@ -50,6 +50,9 @@ data class SlamBook(
 
 
         favoriteSongs = parcel.createTypedArrayList(Song.CREATOR)
+        hobbies = parcel.createTypedArrayList(Hobbies.CREATOR)
+        favoriteMovies = parcel.createTypedArrayList(Movie.CREATOR)
+        skillsWithRate = parcel.createTypedArrayList(Skill.CREATOR)
 
 
 
@@ -81,10 +84,9 @@ data class SlamBook(
 
 
         parcel.writeTypedList(favoriteSongs)
-
-
-
-
+        parcel.writeTypedList(favoriteMovies)
+        parcel.writeTypedList(hobbies)
+        parcel.writeTypedList(skillsWithRate)
 
 
 

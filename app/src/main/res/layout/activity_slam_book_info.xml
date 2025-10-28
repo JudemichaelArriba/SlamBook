@@ -837,38 +837,5 @@
 
 
 
-    <LinearLayout
-        android:id="@+id/actionLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/extra"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="10dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnBack"
-            android:layout_width="150dp"
-            android:layout_height="60dp"
-            android:backgroundTint="@color/mainColor"
-            android:text="Update"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:cornerRadius="24dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSave"
-            android:layout_width="150dp"
-            android:layout_height="60dp"
-            android:layout_margin="5dp"
-            android:backgroundTint="@color/design_default_color_error"
-            android:text="Delete"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:cornerRadius="24dp" />
-    </LinearLayout>
-
 
 </LinearLayout>

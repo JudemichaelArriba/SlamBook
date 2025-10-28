@@ -6,6 +6,10 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.kodego.diangca.ebrahim.myslambook.adapter.AdapterHobbies
+import com.kodego.diangca.ebrahim.myslambook.adapter.AdapterHobbies2
+import com.kodego.diangca.ebrahim.myslambook.adapter.AdapterMovie2
+import com.kodego.diangca.ebrahim.myslambook.adapter.AdapterSkills2
 import com.kodego.diangca.ebrahim.myslambook.adapter.AdapterSong
 import com.kodego.diangca.ebrahim.myslambook.adapter.AdapterSong2
 import com.kodego.diangca.ebrahim.myslambook.databinding.ActivitySlamBookInfoBinding
@@ -15,6 +19,13 @@ class slamBookInfo : AppCompatActivity() {
 
     private lateinit var binding: ActivitySlamBookInfoBinding
     private lateinit var adapterSong2: AdapterSong2
+
+
+    private lateinit var adapterHobbies2: AdapterHobbies2
+
+    private lateinit var adapterSkills2: AdapterSkills2
+    private lateinit var adapterMovie2: AdapterMovie2
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySlamBookInfoBinding.inflate(layoutInflater)
@@ -41,11 +52,27 @@ class slamBookInfo : AppCompatActivity() {
 
 
             val favoriteSongs = it.favoriteSongs ?: arrayListOf()
+            val hobbies = it.hobbies ?: arrayListOf()
+            val skill = it.skillsWithRate ?: arrayListOf()
+            val movie = it.favoriteMovies ?: arrayListOf()
 
             adapterSong2 = AdapterSong2(this, favoriteSongs)
             binding.favSongList.layoutManager = LinearLayoutManager(this)
             binding.favSongList.adapter = adapterSong2
 
+            adapterHobbies2 = AdapterHobbies2(this, hobbies)
+            binding.hobbiesList.layoutManager = LinearLayoutManager(this)
+            binding.hobbiesList.adapter = adapterHobbies2
+
+
+            adapterMovie2 = AdapterMovie2(this, movie)
+            binding.favMovieList.layoutManager = LinearLayoutManager(this)
+            binding.favMovieList.adapter = adapterMovie2
+
+
+            adapterSkills2 = AdapterSkills2(this, skill)
+            binding.skillList.layoutManager = LinearLayoutManager(this)
+            binding.skillList.adapter = adapterSkills2
 
 
 

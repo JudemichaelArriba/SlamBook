@@ -12,6 +12,7 @@ class listPage : AppCompatActivity() {
     private lateinit var binding: ActivityListPageBinding
     private val slamBooks = ArrayList<SlamBook>()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityListPageBinding.inflate(layoutInflater)
