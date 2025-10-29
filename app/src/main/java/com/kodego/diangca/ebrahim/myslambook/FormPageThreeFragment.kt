@@ -7,6 +7,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -123,8 +124,8 @@ class FormPageThreeFragment : Fragment() {
             slamBook.defineFriendship = defineFriendship.text.toString()
             slamBook.memorableExperience = memorableExperience.text.toString()
             slamBook.adviceForMe = adviceForMe.text.toString()
-            slamBook.rateMe = ratingBar.rating.toInt()
-
+            slamBook.rateMe = ratingBar.rating.toDouble()
+            Log.d("FormPageThreeFragment", "Rating saved: ${slamBook.rateMe}")
             parentFragmentManager.setFragmentResult(
                 "slamBooKKey",
                 Bundle().apply { putParcelable("slamBooK", slamBook) }

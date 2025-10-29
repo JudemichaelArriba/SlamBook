@@ -75,6 +75,7 @@ class slamBookInfo : AppCompatActivity() {
             binding.skillList.adapter = adapterSkills2
 
 
+            binding.ratingBar.rating = slamBook.rateMe!!.toFloat()
 
             binding.defineLoveTv.text = it.defineLove ?: ""
             binding.defineFriendshipTv.text = it.defineFriendship ?: ""

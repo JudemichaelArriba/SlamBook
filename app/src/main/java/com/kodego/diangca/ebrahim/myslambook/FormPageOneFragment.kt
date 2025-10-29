@@ -48,6 +48,7 @@ class FormPageOneFragment : Fragment() {
             slamBook = SlamBook()
         }
 
+
         binding.contactNo.addTextChangedListener(object : TextWatcher {
             private var editing = false
 
@@ -59,11 +60,13 @@ class FormPageOneFragment : Fragment() {
 
                 var input = s.toString()
 
+
                 if (input.startsWith("0")) {
                     input = input.drop(1)
                     binding.contactNo.setText(input)
                     binding.contactNo.setSelection(input.length)
                 }
+
 
                 if (input.length > 10) {
                     input = input.substring(0, 10)
@@ -81,7 +84,6 @@ class FormPageOneFragment : Fragment() {
             btnBack.setOnClickListener { btnBackOnClickListener() }
             btnNext.setOnClickListener { btnNextOnClickListener() }
 
-
             dateInput.setOnClickListener { showDatePicker() }
 
             val genderItems = resources.getStringArray(R.array.gender)
@@ -94,24 +96,19 @@ class FormPageOneFragment : Fragment() {
         }
     }
 
-
     private fun showDatePicker() {
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
         val datePicker = DatePickerDialog(
-
-            requireContext(),
-
-            { _, selectedYear, selectedMonth, selectedDay ->
+            requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(selectedYear, selectedMonth, selectedDay)
 
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                 binding.dateInput.setText(dateFormat.format(selectedDate.time))
-            },
-            year, month, day
+            }, year, month, day
         )
         datePicker.datePicker.maxDate = System.currentTimeMillis()
         datePicker.show()
@@ -139,25 +136,14 @@ class FormPageOneFragment : Fragment() {
             }
 
             emailAdd.setText(slamBook.email)
-            contactNo.setText(slamBook.contactNo)
+            contactNo.setText(slamBook.contactNo?.replace("+63", "") ?: "")
             address.setText(slamBook.address)
         }
     }
 
     private fun btnNextOnClickListener() {
         with(binding) {
-            if (nickName.text.isNullOrEmpty() ||
-                friendCall.text.isNullOrEmpty() ||
-                likeToCall.text.isNullOrEmpty() ||
-                lastName.text.isNullOrEmpty() ||
-                firstName.text.isNullOrEmpty() ||
-                dateInput.text.isNullOrEmpty() ||
-                gender.text.isNullOrEmpty() ||
-                status.text.isNullOrEmpty() ||
-                emailAdd.text.isNullOrEmpty() ||
-                contactNo.text.isNullOrEmpty() ||
-                address.text.isNullOrEmpty()
-            ) {
+            if (nickName.text.isNullOrEmpty() || friendCall.text.isNullOrEmpty() || likeToCall.text.isNullOrEmpty() || lastName.text.isNullOrEmpty() || firstName.text.isNullOrEmpty() || dateInput.text.isNullOrEmpty() || gender.text.isNullOrEmpty() || status.text.isNullOrEmpty() || emailAdd.text.isNullOrEmpty() || contactNo.text.isNullOrEmpty() || address.text.isNullOrEmpty()) {
                 if (nickName.text.isNullOrEmpty()) nickName.error = "Please enter Nickname"
                 if (friendCall.text.isNullOrEmpty()) friendCall.error =
                     "Please enter Friend call you"
@@ -182,11 +168,19 @@ class FormPageOneFragment : Fragment() {
                 return
             }
 
-            val contact = contactNo.text.toString()
+            var contact = contactNo.text.toString()
             if (contact.length < 10) {
                 contactNo.error = "Please enter a valid contact number"
                 Snackbar.make(binding.root, "Invalid contact number", Snackbar.LENGTH_SHORT).show()
                 return
+            }
+
+
+            val countryCode = binding.countryCodePicker.selectedCountryCodeWithPlus
+            if (contact.startsWith("0")) {
+                contact = countryCode + contact.drop(1)
+            } else if (!contact.startsWith("+")) {
+                contact = countryCode + contact
             }
 
             slamBook.nickName = nickName.text.toString()
@@ -198,7 +192,7 @@ class FormPageOneFragment : Fragment() {
             slamBook.gender = gender.text.toString()
             slamBook.status = status.text.toString()
             slamBook.email = emailAdd.text.toString()
-            slamBook.contactNo = contactNo.text.toString()
+            slamBook.contactNo = contact
             slamBook.address = address.text.toString()
 
             Log.d("FORM 1", "Saved Data: ${slamBook.birthDate}")
@@ -206,8 +200,7 @@ class FormPageOneFragment : Fragment() {
             val bundle = Bundle()
             bundle.putParcelable("slamBooK", slamBook)
             findNavController().navigate(
-                R.id.action_formPageOneFragment_to_formPageTwoFragment,
-                bundle
+                R.id.action_formPageOneFragment_to_formPageTwoFragment, bundle
             )
         }
     }

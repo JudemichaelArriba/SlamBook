@@ -32,7 +32,7 @@ data class SlamBook(
     var memorableExperience: String? = null
     var describeMe: String? = null
     var adviceForMe: String? = null
-    var rateMe: Int? = null
+    var rateMe: Double? = null
 
     constructor(parcel: Parcel) : this(parcel.readString()) {
         firstName = parcel.readString()
@@ -64,7 +64,7 @@ data class SlamBook(
         memorableExperience = parcel.readString()
         describeMe = parcel.readString()
         adviceForMe = parcel.readString()
-        rateMe = parcel.readValue(Int::class.java.classLoader) as? Int
+        rateMe = parcel.readValue(Double::class.java.classLoader) as? Double
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
