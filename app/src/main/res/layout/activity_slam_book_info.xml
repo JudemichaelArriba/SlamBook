@@ -462,7 +462,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="Favorite songs"
+                        android:text="Favorite songs:"
                         android:textColor="@color/mainColor"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -485,15 +485,15 @@
                     android:id="@+id/linear4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
                         android:id="@+id/titleEducationalBg"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="Favorite Movies"
+                        android:text="Favorite Movies:"
                         android:textColor="@color/mainColor"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -516,14 +516,14 @@
                     android:id="@+id/linear6"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="Hobbies"
+                        android:text="Hobbies:"
                         android:textColor="@color/mainColor"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -547,14 +547,14 @@
                     android:id="@+id/linear8"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="Skills"
+                        android:text="Skills:"
 
                         android:textColor="@color/mainColor"
                         android:textSize="20sp"
@@ -834,8 +834,6 @@
 
         </LinearLayout>
     </ScrollView>
-
-
 
 
 </LinearLayout>

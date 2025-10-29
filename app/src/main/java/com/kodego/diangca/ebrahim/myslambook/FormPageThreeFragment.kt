@@ -120,7 +120,6 @@ class FormPageThreeFragment : Fragment() {
             slamBook.adviceForMe = adviceForMe.text.toString()
             slamBook.rateMe = ratingBar.rating.toInt()
 
-            // Send updated slamBook back to FormPageTwoFragment
             parentFragmentManager.setFragmentResult(
                 "slamBooKKey",
                 Bundle().apply { putParcelable("slamBooK", slamBook) }
@@ -137,7 +136,7 @@ class FormPageThreeFragment : Fragment() {
     }
 
     private fun btnBackOnClickListener() {
-        // Navigate back with slamBook in bundle
+     
         val bundle = Bundle()
         bundle.putParcelable("slamBooK", slamBook)
         findNavController().navigate(

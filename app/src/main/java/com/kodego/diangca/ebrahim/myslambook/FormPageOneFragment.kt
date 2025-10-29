@@ -1,18 +1,19 @@
 package com.kodego.diangca.ebrahim.myslambook
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.kodego.diangca.ebrahim.myslambook.databinding.FragmentFormPageOneBinding
 import com.kodego.diangca.ebrahim.myslambook.model.SlamBook
@@ -23,7 +24,7 @@ class FormPageOneFragment : Fragment() {
 
     private lateinit var binding: FragmentFormPageOneBinding
     private lateinit var slamBook: SlamBook
-    private var selectedBirthDate: Long? = null
+    private val calendar = Calendar.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,9 +47,6 @@ class FormPageOneFragment : Fragment() {
         } else {
             slamBook = SlamBook()
         }
-
-
-
 
         binding.contactNo.addTextChangedListener(object : TextWatcher {
             private var editing = false
@@ -79,39 +77,44 @@ class FormPageOneFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-
-
         with(binding) {
             btnBack.setOnClickListener { btnBackOnClickListener() }
             btnNext.setOnClickListener { btnNextOnClickListener() }
 
 
-            dateInput.setOnClickListener {
-                val datePicker = MaterialDatePicker.Builder.datePicker()
-                    .setTitleText("Select your Birthdate")
-                    .setSelection(selectedBirthDate ?: MaterialDatePicker.todayInUtcMilliseconds())
-                    .build()
-
-                datePicker.show(parentFragmentManager, "DATE_PICKER")
-
-                datePicker.addOnPositiveButtonClickListener { selection ->
-                    selectedBirthDate = selection
-                    val sdf = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault())
-                    val date = Date(selection)
-                    dateInput.setText(sdf.format(date))
-                }
-            }
-
+            dateInput.setOnClickListener { showDatePicker() }
 
             val genderItems = resources.getStringArray(R.array.gender)
             val genderAdapter = ArrayAdapter(requireContext(), R.layout.list_item, genderItems)
             gender.setAdapter(genderAdapter)
 
-
             val statusItems = resources.getStringArray(R.array.status)
             val statusAdapter = ArrayAdapter(requireContext(), R.layout.list_item, statusItems)
             status.setAdapter(statusAdapter)
         }
+    }
+
+
+    private fun showDatePicker() {
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePicker = DatePickerDialog(
+
+            requireContext(),
+
+            { _, selectedYear, selectedMonth, selectedDay ->
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(selectedYear, selectedMonth, selectedDay)
+
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                binding.dateInput.setText(dateFormat.format(selectedDate.time))
+            },
+            year, month, day
+        )
+        datePicker.datePicker.maxDate = System.currentTimeMillis()
+        datePicker.show()
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -169,6 +172,20 @@ class FormPageOneFragment : Fragment() {
 
                 Snackbar.make(binding.root, "Please check empty fields", Snackbar.LENGTH_SHORT)
                     .show()
+                return
+            }
+
+            val email = emailAdd.text.toString()
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                emailAdd.error = "Please enter a valid Email address"
+                Snackbar.make(binding.root, "Invalid email format", Snackbar.LENGTH_SHORT).show()
+                return
+            }
+
+            val contact = contactNo.text.toString()
+            if (contact.length < 10) {
+                contactNo.error = "Please enter a valid contact number"
+                Snackbar.make(binding.root, "Invalid contact number", Snackbar.LENGTH_SHORT).show()
                 return
             }
 
