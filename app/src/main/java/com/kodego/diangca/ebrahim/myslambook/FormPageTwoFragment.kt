@@ -94,7 +94,7 @@ class FormPageTwoFragment : Fragment() {
 
     private fun initComponents() {
         with(binding) {
-            // Initialize adapters
+
             adapterSong = AdapterSong(root.context, songs)
             favSongList.layoutManager = LinearLayoutManager(root.context)
             favSongList.adapter = adapterSong
@@ -111,14 +111,14 @@ class FormPageTwoFragment : Fragment() {
             skillList.layoutManager = LinearLayoutManager(root.context)
             skillList.adapter = adapterSkill
 
-            // Setup skill rate dropdown
+
             val rates = resources.getStringArray(R.array.skillRate)
             val rateAdapter =
                 ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, rates)
             skillRate.setAdapter(rateAdapter)
 
 
-            // Set button click listeners
+
             btnAddFavSong.setOnClickListener {
                 btnAddOnClickListener(root, "Song", songName, favSongList)
             }
@@ -126,10 +126,10 @@ class FormPageTwoFragment : Fragment() {
                 btnAddOnClickListener(root, "Movie", movieName, favMovieList)
             }
             btnAddHobbies.setOnClickListener {
-                btnAddOnClickListener(root, "Hobbies", hobbiesInput, hobbiesList) // ✅ corrected
+                btnAddOnClickListener(root, "Hobbies", hobbiesInput, hobbiesList)
             }
             btnAddSkill.setOnClickListener {
-                btnAddOnClickListener(root, "Skills", skillInput, skillList) // ✅ corrected
+                btnAddOnClickListener(root, "Skills", skillInput, skillList)
             }
 
 
@@ -201,7 +201,7 @@ class FormPageTwoFragment : Fragment() {
 
 
         /*
-        checker if the fields didnt have atleast one darta
+        checker if the fields didn't have at least one data
          */
         if (songs.isEmpty()) {
             binding.songName.error = "Add at least one favorite song"

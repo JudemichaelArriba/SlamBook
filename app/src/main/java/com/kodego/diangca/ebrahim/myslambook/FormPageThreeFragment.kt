@@ -34,7 +34,8 @@ class FormPageThreeFragment : Fragment() {
             if (success && cameraImageUri != null) {
                 selectedImageUri = cameraImageUri
                 selectedImageUri?.let { uri -> saveAndLoadImage(uri) }
-                Toast.makeText(requireContext(), "Profile picture taken!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Profile picture taken!", Toast.LENGTH_SHORT)
+                    .show()
             } else {
                 Toast.makeText(requireContext(), "Camera cancelled.", Toast.LENGTH_SHORT).show()
             }
@@ -45,7 +46,8 @@ class FormPageThreeFragment : Fragment() {
             if (result.resultCode == Activity.RESULT_OK && result.data != null) {
                 selectedImageUri = result.data!!.data
                 selectedImageUri?.let { uri -> saveAndLoadImage(uri) }
-                Toast.makeText(requireContext(), "Profile picture selected!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Profile picture selected!", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -105,11 +107,14 @@ class FormPageThreeFragment : Fragment() {
                 adviceForMe.text.isNullOrEmpty()
             ) {
                 if (describeMe.text.isNullOrEmpty()) describeMe.error = "Please enter Nickname"
-                if (defineLove.text.isNullOrEmpty()) defineLove.error = "Please enter Friend call you"
-                if (defineFriendship.text.isNullOrEmpty()) defineFriendship.error = "Please enter Like to call you"
+                if (defineLove.text.isNullOrEmpty()) defineLove.error =
+                    "Please enter Friend call you"
+                if (defineFriendship.text.isNullOrEmpty()) defineFriendship.error =
+                    "Please enter Like to call you"
                 if (adviceForMe.text.isNullOrEmpty()) adviceForMe.error = "Please enter First name"
 
-                Snackbar.make(binding.root, "Please check empty fields", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Please check empty fields", Snackbar.LENGTH_SHORT)
+                    .show()
                 return
             }
 
@@ -136,7 +141,7 @@ class FormPageThreeFragment : Fragment() {
     }
 
     private fun btnBackOnClickListener() {
-     
+
         val bundle = Bundle()
         bundle.putParcelable("slamBooK", slamBook)
         findNavController().navigate(
@@ -169,7 +174,10 @@ class FormPageThreeFragment : Fragment() {
     private fun saveImageToInternalStorage(uri: Uri): Uri {
         val bitmap = if (Build.VERSION.SDK_INT < 28) {
             @Suppress("DEPRECATION")
-            android.provider.MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+            android.provider.MediaStore.Images.Media.getBitmap(
+                requireContext().contentResolver,
+                uri
+            )
         } else {
             val source = ImageDecoder.createSource(requireContext().contentResolver, uri)
             ImageDecoder.decodeBitmap(source)
