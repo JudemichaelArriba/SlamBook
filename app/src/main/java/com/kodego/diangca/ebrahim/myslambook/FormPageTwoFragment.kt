@@ -68,7 +68,6 @@ class FormPageTwoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Listeniner for updated slamBook from FormPageThreeFragment
         parentFragmentManager.setFragmentResultListener(
             "slamBooKKey",
             viewLifecycleOwner
@@ -76,8 +75,6 @@ class FormPageTwoFragment : Fragment() {
             bundle.getParcelable<SlamBook>("slamBooK")?.let {
                 slamBook = it
                 restoreDataFromSlamBook()
-
-                // Refresher for adapters
                 if (::adapterSong.isInitialized) adapterSong.updateData(songs)
                 if (::adapterMovie.isInitialized) adapterMovie.updateData(movies)
                 if (::adapterHobbies.isInitialized) adapterHobbies.updateData(hobbies)
@@ -90,7 +87,6 @@ class FormPageTwoFragment : Fragment() {
         }
         initComponents()
     }
-
 
     private fun initComponents() {
         with(binding) {
@@ -111,13 +107,10 @@ class FormPageTwoFragment : Fragment() {
             skillList.layoutManager = LinearLayoutManager(root.context)
             skillList.adapter = adapterSkill
 
-
             val rates = resources.getStringArray(R.array.skillRate)
             val rateAdapter =
                 ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, rates)
             skillRate.setAdapter(rateAdapter)
-
-
 
             btnAddFavSong.setOnClickListener {
                 btnAddOnClickListener(root, "Song", songName, favSongList)
@@ -132,11 +125,9 @@ class FormPageTwoFragment : Fragment() {
                 btnAddOnClickListener(root, "Skills", skillInput, skillList)
             }
 
-
             btnBack.setOnClickListener { btnBackOnClickListener() }
             btnNext.setOnClickListener { btnNextOnClickListener() }
         }
-
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -151,7 +142,6 @@ class FormPageTwoFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 
-
     @SuppressLint("NotifyDataSetChanged")
     private fun btnAddOnClickListener(
         view: View?,
@@ -159,11 +149,27 @@ class FormPageTwoFragment : Fragment() {
         field: TextInputEditText,
         recyclerView: RecyclerView
     ) {
-        val text = field.text.toString()
+        val text = field.text.toString().trim()
         if (text.isEmpty()) {
+            field.error = "Please enter $type"
             Snackbar.make(binding.root, "Please check empty fields.", Snackbar.LENGTH_SHORT).show()
             return
         }
+
+        val duplicateExists = when (type) {
+            "Song" -> songs.any { it.songName.equals(text, ignoreCase = true) }
+            "Movie" -> movies.any { it.movieName.equals(text, ignoreCase = true) }
+            "Hobbies" -> hobbies.any { it.hobbie.equals(text, ignoreCase = true) }
+            "Skills" -> skills.any { it.skill.equals(text, ignoreCase = true) }
+            else -> false
+        }
+
+        if (duplicateExists) {
+            field.error = "$type already added"
+            Snackbar.make(binding.root, "$type already added.", Snackbar.LENGTH_SHORT).show()
+            return
+        }
+
         when (type) {
             "Song" -> songs.add(Song(text))
             "Movie" -> movies.add(Movie(text))
@@ -171,6 +177,7 @@ class FormPageTwoFragment : Fragment() {
             "Skills" -> {
                 val selectedRate = binding.skillRate.text.toString()
                 if (selectedRate.isEmpty()) {
+                    binding.skillRate.error = "Please select a rate first"
                     Snackbar.make(
                         binding.root,
                         "Please select a rate first.",
@@ -181,6 +188,10 @@ class FormPageTwoFragment : Fragment() {
                 skills.add(Skill(text, selectedRate.toInt()))
             }
         }
+
+        field.error = null
+        if (type == "Skills") binding.skillRate.error = null
+
         Snackbar.make(binding.root, "Data has been successfully added.", Snackbar.LENGTH_SHORT)
             .show()
         field.setText("")
@@ -196,13 +207,8 @@ class FormPageTwoFragment : Fragment() {
 
     private fun btnNextOnClickListener() {
 
-
         var hasError = false
 
-
-        /*
-        checker if the fields didn't have at least one data
-         */
         if (songs.isEmpty()) {
             binding.songName.error = "Add at least one favorite song"
             hasError = true
@@ -226,9 +232,11 @@ class FormPageTwoFragment : Fragment() {
 
         if (skills.isEmpty()) {
             binding.skillInput.error = "Add at least one skill"
+            binding.skillRate.error = "Select rate"
             hasError = true
         } else {
             binding.skillInput.error = null
+            binding.skillRate.error = null
         }
 
         if (hasError) {
@@ -239,7 +247,6 @@ class FormPageTwoFragment : Fragment() {
             ).show()
             return
         }
-
 
         slamBook.favoriteSongs = songs
         slamBook.favoriteMovies = movies
