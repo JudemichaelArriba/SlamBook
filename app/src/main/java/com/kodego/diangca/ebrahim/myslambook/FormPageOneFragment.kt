@@ -48,7 +48,6 @@ class FormPageOneFragment : Fragment() {
             slamBook = SlamBook()
         }
 
-
         binding.contactNo.addTextChangedListener(object : TextWatcher {
             private var editing = false
 
@@ -59,20 +58,10 @@ class FormPageOneFragment : Fragment() {
                 editing = true
 
                 var input = s.toString()
-
-
-                if (input.startsWith("0")) {
-                    input = input.drop(1)
-                    binding.contactNo.setText(input)
-                    binding.contactNo.setSelection(input.length)
-                }
-
-
-                if (input.length > 10) {
-                    input = input.substring(0, 10)
-                    binding.contactNo.setText(input)
-                    binding.contactNo.setSelection(input.length)
-                }
+                if (input.startsWith("0")) input = input.drop(1)
+                if (input.length > 10) input = input.substring(0, 10)
+                binding.contactNo.setText(input)
+                binding.contactNo.setSelection(input.length)
 
                 editing = false
             }
@@ -86,12 +75,10 @@ class FormPageOneFragment : Fragment() {
 
             dateInput.setOnClickListener { showDatePicker() }
 
-            val genderItems = resources.getStringArray(R.array.gender)
-            val genderAdapter = ArrayAdapter(requireContext(), R.layout.list_item, genderItems)
+            val genderAdapter = ArrayAdapter(requireContext(), R.layout.list_item, resources.getStringArray(R.array.gender))
             gender.setAdapter(genderAdapter)
 
-            val statusItems = resources.getStringArray(R.array.status)
-            val statusAdapter = ArrayAdapter(requireContext(), R.layout.list_item, statusItems)
+            val statusAdapter = ArrayAdapter(requireContext(), R.layout.list_item, resources.getStringArray(R.array.status))
             status.setAdapter(statusAdapter)
         }
     }
@@ -105,7 +92,6 @@ class FormPageOneFragment : Fragment() {
             requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(selectedYear, selectedMonth, selectedDay)
-
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                 binding.dateInput.setText(dateFormat.format(selectedDate.time))
             }, year, month, day
@@ -122,19 +108,9 @@ class FormPageOneFragment : Fragment() {
             likeToCall.setText(slamBook.likeToCallMe)
             lastName.setText(slamBook.lastName)
             firstName.setText(slamBook.firstName)
-
-            if (!slamBook.birthDate.isNullOrEmpty()) {
-                dateInput.setText(slamBook.birthDate)
-            }
-
-            if (!slamBook.gender.isNullOrEmpty()) {
-                gender.setText(slamBook.gender, false)
-            }
-
-            if (!slamBook.status.isNullOrEmpty()) {
-                status.setText(slamBook.status, false)
-            }
-
+            dateInput.setText(slamBook.birthDate ?: "")
+            gender.setText(slamBook.gender ?: "", false)
+            status.setText(slamBook.status ?: "", false)
             emailAdd.setText(slamBook.email)
             contactNo.setText(slamBook.contactNo?.replace("+63", "") ?: "")
             address.setText(slamBook.address)
@@ -145,42 +121,61 @@ class FormPageOneFragment : Fragment() {
         with(binding) {
             if (nickName.text.isNullOrEmpty() || friendCall.text.isNullOrEmpty() || likeToCall.text.isNullOrEmpty() || lastName.text.isNullOrEmpty() || firstName.text.isNullOrEmpty() || dateInput.text.isNullOrEmpty() || gender.text.isNullOrEmpty() || status.text.isNullOrEmpty() || emailAdd.text.isNullOrEmpty() || contactNo.text.isNullOrEmpty() || address.text.isNullOrEmpty()) {
                 if (nickName.text.isNullOrEmpty()) nickName.error = "Please enter Nickname"
-                if (friendCall.text.isNullOrEmpty()) friendCall.error =
-                    "Please enter Friend call you"
-                if (likeToCall.text.isNullOrEmpty()) likeToCall.error =
-                    "Please enter Like to call you"
+                if (friendCall.text.isNullOrEmpty()) friendCall.error = "Please enter Friend call you"
+                if (likeToCall.text.isNullOrEmpty()) likeToCall.error = "Please enter Like to call you"
                 if (lastName.text.isNullOrEmpty()) lastName.error = "Please enter Last name"
                 if (firstName.text.isNullOrEmpty()) firstName.error = "Please enter First name"
                 if (dateInput.text.isNullOrEmpty()) dateInput.error = "Please select birthdate"
                 if (emailAdd.text.isNullOrEmpty()) emailAdd.error = "Please enter Email"
                 if (contactNo.text.isNullOrEmpty()) contactNo.error = "Please enter Contact No."
                 if (address.text.isNullOrEmpty()) address.error = "Please enter Address"
-
-                Snackbar.make(binding.root, "Please check empty fields", Snackbar.LENGTH_SHORT)
-                    .show()
+                Snackbar.make(binding.root, "Please check empty fields", Snackbar.LENGTH_SHORT).show()
                 return
             }
 
             val email = emailAdd.text.toString()
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                emailAdd.error = "Please enter a valid Email address"
-                Snackbar.make(binding.root, "Invalid email format", Snackbar.LENGTH_SHORT).show()
+                emailAdd.error = "Invalid Email address"
+                Snackbar.make(binding.root, "Email is already invalid", Snackbar.LENGTH_SHORT).show()
                 return
             }
 
             var contact = contactNo.text.toString()
             if (contact.length < 10) {
-                contactNo.error = "Please enter a valid contact number"
-                Snackbar.make(binding.root, "Invalid contact number", Snackbar.LENGTH_SHORT).show()
+                contactNo.error = "Invalid Contact number"
+                Snackbar.make(binding.root, "Contact number is too short", Snackbar.LENGTH_SHORT).show()
                 return
             }
 
-
             val countryCode = binding.countryCodePicker.selectedCountryCodeWithPlus
-            if (contact.startsWith("0")) {
-                contact = countryCode + contact.drop(1)
-            } else if (!contact.startsWith("+")) {
-                contact = countryCode + contact
+            if (contact.startsWith("0")) contact = countryCode + contact.drop(1)
+            else if (!contact.startsWith("+")) contact = countryCode + contact
+
+            val fullName = "${firstName.text} ${lastName.text}".trim()
+            val duplicateBook = MenuActivity.slamBooks.find { existingBook ->
+                val existingFullName = "${existingBook.firstName} ${existingBook.lastName}".trim()
+                existingFullName.equals(fullName, ignoreCase = true) ||
+                        existingBook.email.equals(email, ignoreCase = true) ||
+                        existingBook.contactNo == contact
+            }
+
+            if (duplicateBook != null) {
+                when {
+                    duplicateBook.email.equals(email, ignoreCase = true) -> {
+                        emailAdd.error = "Email already exists"
+                        Snackbar.make(root, "Email already exists", Snackbar.LENGTH_SHORT).show()
+                    }
+                    duplicateBook.contactNo == contact -> {
+                        contactNo.error = "Contact number already exists"
+                        Snackbar.make(root, "Contact number already exists", Snackbar.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        firstName.error = "Name already exists"
+                        lastName.error = "Name already exists"
+                        Snackbar.make(root, "Name already exists", Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+                return
             }
 
             slamBook.nickName = nickName.text.toString()
@@ -191,7 +186,7 @@ class FormPageOneFragment : Fragment() {
             slamBook.birthDate = dateInput.text.toString()
             slamBook.gender = gender.text.toString()
             slamBook.status = status.text.toString()
-            slamBook.email = emailAdd.text.toString()
+            slamBook.email = email
             slamBook.contactNo = contact
             slamBook.address = address.text.toString()
 
@@ -199,9 +194,7 @@ class FormPageOneFragment : Fragment() {
 
             val bundle = Bundle()
             bundle.putParcelable("slamBooK", slamBook)
-            findNavController().navigate(
-                R.id.action_formPageOneFragment_to_formPageTwoFragment, bundle
-            )
+            findNavController().navigate(R.id.action_formPageOneFragment_to_formPageTwoFragment, bundle)
         }
     }
 
